@@ -1,47 +1,42 @@
 from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
-from kinto_http import Client
+import json
 
 # specify the url
-quote_page = Request("file:///source/data.html")
+src_pages = ['16492994', '16282819', '16052538']
 
-# query the website and return the html to the variable 'page'
-page = urlopen(quote_page)
+def extract_header(text=''):
+    header = '|'.join(p[0:min(50, len(p))] for p in text.replace('\n', ' ').split('|'))
+    return header
 
-# parse the html using beautiful soap and store in variable `soup`
-soup = BeautifulSoup(page, 'html.parser')
+def extract_opps(src_pages=[]):
+    opps = []
+    for pageid in src_pages:
+        src_page = 'https://news.ycombinator.com/item?id='+pageid
+        # query the website and return the html to the variable 'page'
+        page = urlopen(src_page)
 
-# Take the row of the comments
-offers = soup.findAll('tr', attrs={'class': 'athing'})
-#kinto client
-client = Client(server_url="https://kinto-instance-sample.herokuapp.com/v1/"
-                , auth=('mozilla-username', 'mozilla-password'))
+        # parse the html using beautiful soap and store in variable `soup`
+        soup = BeautifulSoup(page, 'html.parser')
 
-info = client.server_info()
-assert 'schema' in info['capabilities'], "Server doesn't support schema validation."
+        # Take the row of the comments
+        offers = soup.findAll('tr', attrs={'class': 'athing'})
+        for o in offers:
+            comm_id = o.get('id')
+            a = o.find('span', attrs={'class': 'c00'})
+            if a:
+                text = a.text.strip()
+                #TODO: change this selection criteria
+                if '|' in text:
+                    header = extract_header(text)
+                    opps.append({'id': comm_id, 'text': text, 'header': header})
 
-# To get an existing bucket
-bucket_id = 'hn'
-try:
-    bucket = client.get_bucket(id=bucket_id)
-except:
-    # To create a bucket.
-    client.create_bucket(id=bucket_id)
+    return opps
 
 
-# Or get an existing one.
-collection_id = 'hn-hiring'
-try:
-    collection = client.get_collection(id=collection_id, bucket=bucket_id)
-except:
-    # To create a bucket.
-    client.create_collection(id=collection_id, bucket=bucket_id)
+def serialize(filename, opps=[]):
+    with open(filename, 'w') as outfile:
+        json.dump(opps, outfile)
 
-for o in offers:
-    comm_id = o.get('id')
-    a = o.find('span', attrs={'class': 'c00'})
-    if a:
-        text = a.text.strip()
-        if '|' in text:
-            client.update_record(data={'text': text}, id=comm_id
-                                 , collection=collection_id, bucket=bucket_id)
+if __name__ != "main":
+    serialize('data.json', extract_opps(src_pages))
