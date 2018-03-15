@@ -22,6 +22,9 @@ class HNOpp(object):
     def as_tuple(self):
         return (self.id, self.header, self.text)
 
+def extract_header(text=''):
+    header = '|'.join(p[0:min(50, len(p))] for p in text.replace('\n', ' ').split('|'))
+    return header
 
 def extract_opps(src_pages=[], local=False):
     opps = set([])
@@ -46,8 +49,8 @@ def extract_opps(src_pages=[], local=False):
                 header = ' '.join(a.findAll(text=True, recursive=False)).strip()
                 #TODO: change this selection criteria
                 if '|' in header:
-                    text = '\n '.join([p.text.strip() for p in a.find_all('p')])
-                    opps.add(HNOpp(comm_id, header, text))
+                    text = a.find('p').text.strip().replace('\nreply', ' ')
+                    opps.add(HNOpp(comm_id, extract_header(header), text))
 
     return opps
 
