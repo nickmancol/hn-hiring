@@ -156,7 +156,18 @@
           });
 
           $("#formSearch").on("submit",function(event){
-            var res = index.search($("#searchText").val());
+            var res = index.search($("#searchText").val(), {
+                fields: {
+                    text: {
+                        boost: 2,
+                        bool: "AND",
+                        expand: false
+                    },
+                    header: {boost: 1}
+                },
+                bool: "OR",
+                expand: true
+            });
             $("#divResults").html("");
             app7.groceryList = [];
             for(i=0; i<res.length;i++){
