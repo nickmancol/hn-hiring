@@ -5,12 +5,30 @@ import csv
 # specify the url
 src_pages = ['16052538', '16492994', '16282819' ]
 
+
+class HNOpp(object):
+    #just to use a set as a way to avoid duplicates, __eq__ and __hash__ are nonsense
+    def __init__(self, id, header, text):
+        self.id = id
+        self.header = header
+        self.text = text
+
+    def __eq__(self, other):
+        return self.text.lower() == other.text.lower()
+
+    def __hash__(self):
+        return hash(self.text.lower())
+
+    def as_tuple(self):
+        return (self.id, self.header, self.text)
+
+
 def extract_header(text=''):
     header = '|'.join(p[0:min(50, len(p))] for p in text.replace('\n', ' ').split('|'))
     return header
 
 def extract_opps(src_pages=[], local=False):
-    opps = [('article_id', 'header', 'text')]
+    opps = set([])
     src_pages.sort(reverse=True)
 
     for pageid in src_pages:
@@ -33,7 +51,7 @@ def extract_opps(src_pages=[], local=False):
                 #TODO: change this selection criteria
                 if '|' in text:
                     header = extract_header(text)
-                    opps.append((comm_id, header, text))
+                    opps.add(HNOpp(comm_id, header, text))
 
     return opps
 
@@ -41,7 +59,8 @@ def extract_opps(src_pages=[], local=False):
 def serialize(filename, opps=[]):
     with open(filename, 'w') as f:
         writer = csv.writer(f)
-        writer.writerows(opps)
+        writer.writerow(['article_id', 'header', 'text'])
+        writer.writerows([o.as_tuple() for o in opps])
 
 if __name__ != "main":
     serialize('data.csv', extract_opps(

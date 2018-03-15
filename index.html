@@ -30,8 +30,11 @@
           step: function(row) {
             index.addDoc({'id':row.data[0].article_id,'header':row.data[0].header,'text':row.data[0].text});
           },
+          error:function(e){
+            console.log(e);
+          },
           complete: function() {
-            console.log($("#divResults").text("Index Loaded, now you can search..."));
+            $("#divResults").text("Index Loaded, now you can search...");
           }
         });
 
