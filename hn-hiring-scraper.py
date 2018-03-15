@@ -23,10 +23,6 @@ class HNOpp(object):
         return (self.id, self.header, self.text)
 
 
-def extract_header(text=''):
-    header = '|'.join(p[0:min(50, len(p))] for p in text.replace('\n', ' ').split('|'))
-    return header
-
 def extract_opps(src_pages=[], local=False):
     opps = set([])
     src_pages.sort(reverse=True)
@@ -47,10 +43,10 @@ def extract_opps(src_pages=[], local=False):
             comm_id = o.get('id')
             a = o.find('span', attrs={'class': 'c00'})
             if a:
-                text = a.text.strip().replace('\nreply','')
+                header = ' '.join(a.findAll(text=True, recursive=False)).strip()
                 #TODO: change this selection criteria
-                if '|' in text:
-                    header = extract_header(text)
+                if '|' in header:
+                    text = '\n '.join([p.text.strip() for p in a.find_all('p')])
                     opps.add(HNOpp(comm_id, header, text))
 
     return opps
@@ -63,4 +59,4 @@ def serialize(filename, opps=[]):
         writer.writerows([o.as_tuple() for o in opps])
 
 if __name__ != "main":
-    serialize('data.csv', extract_opps(src_pages, local=True))
+    serialize('data.csv', extract_opps(src_pages, local=False))

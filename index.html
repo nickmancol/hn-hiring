@@ -123,8 +123,27 @@
     <script type="text/javascript" src="js/cash.min.js"></script>
     <script type="text/javascript" src="js/vue.min.js"></script>
     <script type="text/javascript">
+      Vue.component('todo-item', {
+        props: ['todo'],
+        template: '<div class="row no-gutters">'
+          +'<div class="col-lg-12 order-lg-1 my-auto showcase-text">'
+            +'<h3><a href="https://news.ycombinator.com/item?id={{todo.id}}" target="_blank">{{todo.id}}</h3>'
+            +'<h2>{{todo.header}}...</h2>'
+            +'<p class="lead mb-0">{{todo.text}}</p>'
+          +'</div>'
+        +'</div>'
+        ,
+      })
+
+      var app7 = new Vue({
+        el: '#app-7',
+        data: {groceryList: []}
+      })
+    </script>
+    <script type="text/javascript">
       $(function(){
           var index = elasticlunr(function () {
+              this.addField('header');
               this.addField('text');
               this.setRef('id');
           });
@@ -147,32 +166,13 @@
           $("#searchBtn").on("click",function(event){
             var res = index.search($("#searchText").val());
             $("#divResults").html("");
-            console.log(res);
+            app7.groceryList = [];
             for(i=0; i<res.length;i++){
-              currentDoc = res[i];
-              $("#divResults").append("<div>"+currentDoc.doc.text+"</div>")
+              var doc = res[i].doc;
+              app7.groceryList.push({id:doc.id, header:doc.header, text:doc.text});
             }
           });
       });
-    </script>
-
-    <script type="text/javascript">
-      Vue.component('todo-item', {
-        props: ['id', 'header', 'text'],
-        template: '<div>a{{item.text}}</div>'
-        ,
-      })
-
-      var app7 = new Vue({
-      el: '#app-7',
-      data: {
-        groceryList: [
-          { id: 0, text: 'Vegetables', header:'header 1' },
-          { id: 1, text: 'Cheese', header:'header 2' },
-          { id: 2, text: 'Whatever else humans are supposed to eat', header:'header 3' }
-        ]
-      }
-      })
     </script>
 
   </body>
