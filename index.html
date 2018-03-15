@@ -3,8 +3,48 @@
 <head>
     <meta charset="utf-8">
     <title>HN-Hiring simple Javascript app to search over HN_hiring posts.</title>
-</head>
 
+</head>
+  <form id="searchForm" method="post">
+    <input type="text" id="searchText" value="">
+    <input id="searchBtn" type="button" value="search">
+  </form>
+  <div id="divResults">
+    Loading...
+  </div>
 <body>
+  <script type="text/javascript" src="js/elasticlunr.min.js"></script>
+  <script type="text/javascript" src="js/papaparse.min.js"></script>
+  <script type="text/javascript" src="js/cash.min.js"></script>
+  <script type="text/javascript">
+    $(function(){
+        var index = elasticlunr(function () {
+            this.addField('text');
+            this.setRef('id');
+        });
+        index.saveDocument(true);
+        Papa.parse("./data.csv", {
+          download: true,
+          header:true,
+          worker:false,
+          step: function(row) {
+            index.addDoc({'id':row.data[0].article_id,'header':row.data[0].header,'text':row.data[0].text});
+          },
+          complete: function() {
+            console.log($("#divResults").text("Index Loaded, now you can search..."));
+          }
+        });
+
+        $("#searchBtn").on("click",function(event){
+          var res = index.search($("#searchText").val());
+          $("#divResults").html("");
+          console.log(res);
+          for(i=0; i<res.length;i++){
+            currentDoc = res[i];
+            $("#divResults").append("<div>"+currentDoc.doc.text+"</div>")
+          }
+        });
+    });
+  </script>
 </body>
 </html>
