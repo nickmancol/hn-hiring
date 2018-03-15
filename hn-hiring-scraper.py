@@ -49,7 +49,12 @@ def extract_opps(src_pages=[], local=False):
                 header = ' '.join(a.findAll(text=True, recursive=False)).strip()
                 #TODO: change this selection criteria
                 if '|' in header:
-                    text = a.find('p').text.strip().replace('\nreply', ' ')
+                    text = ''
+                    for x in a.findAll('p'):
+                        if len(x.contents) > 0:
+                            text += ' '+str(x.contents[0]).strip()
+
+                    text = text.replace('\nreply', '').replace('<font size="1"> </font>', '')
                     opps.add(HNOpp(comm_id, extract_header(header), text))
 
     return opps

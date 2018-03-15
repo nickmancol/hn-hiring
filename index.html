@@ -42,13 +42,13 @@
             <h1 id="helloHN" class="mb-5">Loading...</h1>
           </div>
           <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
-            <form>
+            <form id="formSearch">
               <div class="form-row">
                 <div class="col-12 col-md-9 mb-2 mb-md-0">
                   <input id="searchText" type="text" class="form-control form-control-lg" placeholder="Enter your interest...">
                 </div>
                 <div class="col-12 col-md-3">
-                  <span id="searchBtn" class="btn btn-block btn-lg btn-primary">Sign up!</span>
+                  <button id="searchBtn" type="submit" class="btn btn-block btn-lg btn-primary">I feel lucky...</span>
                 </div>
               </div>
             </form>
@@ -120,7 +120,6 @@
     <script type="text/javascript" src="js/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript" src="js/elasticlunr.min.js"></script>
     <script type="text/javascript" src="js/papaparse.min.js"></script>
-    <script type="text/javascript" src="js/cash.min.js"></script>
     <script type="text/javascript" src="js/vue.min.js"></script>
     <script type="text/javascript">
       Vue.component('todo-item', {
@@ -156,7 +155,7 @@
             }
           });
 
-          $("#searchBtn").on("click",function(event){
+          $("#formSearch").on("submit",function(event){
             var res = index.search($("#searchText").val());
             $("#divResults").html("");
             app7.groceryList = [];
@@ -164,6 +163,8 @@
               var doc = res[i].doc;
               app7.groceryList.push({id:doc.id, header:doc.header, text:doc.text});
             }
+            $("#helloHN").text("Found: "+res.length);
+            event.preventDefault();
           });
       });
     </script>
