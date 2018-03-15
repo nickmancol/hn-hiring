@@ -63,8 +63,4 @@ def serialize(filename, opps=[]):
         writer.writerows([o.as_tuple() for o in opps])
 
 if __name__ != "main":
-    serialize('data.csv', extract_opps(
-        ['file:///home/nickman/code/hn-hiring/data/1-2018.html'
-        ,'file:///home/nickman/code/hn-hiring/data/2-2018.html'
-        ,'file:///home/nickman/code/hn-hiring/data/3-2018.html']
-            , local=True))
+    serialize('data.csv', extract_opps(src_pages, local=True))
