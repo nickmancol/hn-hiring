@@ -125,17 +125,13 @@ def set_tags(index, opps_dict, dict_key, search_field, filesrc):
             cities = f.readlines()
         for c in cities:
             querystr = And([Term(search_field, token.lower()) for token in c.strip().split(' ')])
-            results = searcher.search(querystr)
+            results = searcher.search(querystr, limit=None)
             for r in results:
                 opps_dict[r['id']][dict_key].append(c)
 
 
 
 if __name__ != "main":
-    opps = extract_opps([
-            'file:///home/nickman/code/hn-hiring/data/1-2018.html'
-            #,'file:///home/nickman/code/hn-hiring/data/2-2018.html'
-            #,'file:///home/nickman/code/hn-hiring/data/3-2018.html'
-    ], local=True)
+    opps = extract_opps(src_pages, local=False)
     serialize_filters("filters.csv", opps)
-    #serialize('data.csv', opps)
+    serialize('data.csv', opps)
