@@ -52,9 +52,11 @@ def extract_opps(src_pages=[], local=False):
                     text = ''
                     for x in a.findAll('p'):
                         if len(x.contents) > 0:
-                            text += ' '+str(x.contents[0]).strip()
+                            first_content = str(x.contents[0])
+                            if not first_content.startswith('<font'):
+                                text += ' '+first_content.strip()
 
-                    text = text.replace('\nreply', '').replace('<font size="1"> </font>', '')
+                    text = text.replace('\nreply', '')
                     opps.add(HNOpp(comm_id, extract_header(header), text))
 
     return opps
