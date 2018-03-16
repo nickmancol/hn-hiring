@@ -78,27 +78,58 @@ def serialize(filename, opps=[]):
 
 
 def serialize_filters(filename, opps=[]):
-    schema = Schema(id=ID, header=TEXT, text=TEXT)
+    schema = Schema(id=ID(stored=True), header=TEXT, text=TEXT)
     ix = create_in("./", schema)
     writer = ix.writer()
     res = {}
     for o in opps:
         writer.add_document(id=o.id, header=o.header, text=o.text)
-        res[o.id] = {'languages': [], 'cities': [], 'roles': []}
+        res[o.id] = {'languages': [], 'cities': [], 'roles': [], 'perks': []}
 
     writer.commit()
-    set_cities(ix, res)
+    set_tags(ix, res, 'cities', 'header', './cities.csv')
+    set_tags(ix, res, 'perks', 'header', './perks.csv')
+    set_tags(ix, res, 'languages', 'text', './languages.csv')
+    set_tags(ix, res, 'roles', 'text', './roles.csv')
+    with open(filename, 'w') as f:
+        writer = csv.writer(f)
+        writer.writerow(['article_id']
+                        +['city_'+str(i) for i in range(1,4)]
+                        +['lang_'+str(i) for i in range(1,4)]
+                        +['roles_'+str(i) for i in range(1,4)]
+                        +['perk_'+str(i) for i in range(1,4)])
+        for k in res.keys():
+            curr = res[k]
+            row = [k]
+            row += get_list_vals(curr, 'cities')
+            row += get_list_vals(curr, 'languages')
+            row += get_list_vals(curr, 'roles')
+            row += get_list_vals(curr, 'perks')
+            writer.writerow(row)
 
-def set_cities(index, opps_dict):
+
+def get_list_vals(row, field, max=3):
+    res = []
+    for i in range(0, max):
+        val = None
+        if i < len(row[field]):
+            val = str(row[field][i]).strip()
+        res.append(val)
+    return res
+
+
+def set_tags(index, opps_dict, dict_key, search_field, filesrc):
     with index.searcher() as searcher:
-        parser = QueryParser("header", index.schema)
-        with open('./cities.csv') as f:
+        parser = QueryParser(search_field, index.schema)
+        with open(filesrc) as f:
             cities = f.readlines()
         for c in cities:
-            querystr = And([Term("header", token) for token in c.strip().split(' ')])
+            querystr = And([Term(search_field, token.lower()) for token in c.strip().split(' ')])
             results = searcher.search(querystr)
-            if len(results) > 0:
-                print(results)
+            for r in results:
+                opps_dict[r['id']][dict_key].append(c)
+
+
 
 if __name__ != "main":
     opps = extract_opps([
