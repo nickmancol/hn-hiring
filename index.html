@@ -20,7 +20,7 @@
 
     <!-- Custom styles for this template -->
     <link href="css/landing-page.min.css" rel="stylesheet">
-
+    <link rel="stylesheet" type="text/css" href="css/dc.min.css"/>
   </head>
 
   <body>
@@ -57,6 +57,14 @@
       </div>
     </header>
 
+    <section class="showcase">
+      <div id="filters" class="row">
+        <div id="chart-ring-lang"></div>
+        <div id="city-ring-lang"></div>
+        <div id="role-ring-lang"></div>
+        <div id="perk-ring-lang"></div>
+      </div>
+    </section>
     <!-- Image Showcases -->
     <section class="showcase">
       <div id="app-7">
@@ -120,6 +128,9 @@
     <script type="text/javascript" src="js/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript" src="js/elasticlunr.min.js"></script>
     <script type="text/javascript" src="js/papaparse.min.js"></script>
+    <script type="text/javascript" src="js/d3.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/crossfilter.min.js"></script>
+    <script type="text/javascript" src="js/dc.js"></script>
     <script type="text/javascript" src="js/vue.min.js"></script>
     <script type="text/javascript">
       Vue.component('todo-item', {
@@ -140,15 +151,12 @@
               this.setRef('id');
           });
           index.saveDocument(true);
-          Papa.parse("./data.csv", {
+          Papa.parse("./dataCHANGEME.csv", {
             download: true,
             header:true,
             worker:false,
             step: function(row) {
               index.addDoc({'id':row.data[0].article_id,'header':row.data[0].header,'text':row.data[0].text});
-            },
-            error:function(e){
-              console.log(e);
             },
             complete: function() {
               $("#helloHN").text("Index Loaded, now you can search for a job...");
@@ -179,6 +187,78 @@
           });
       });
     </script>
+
+    <script type="text/javascript">
+      var data = [];
+      Papa.parse("./filters.csv", {
+        download: true,
+        header:true,
+        worker:false,
+        step: function(row) {
+          data.push(row.data[0]);
+        },
+        complete: function() {
+          var ndx = crossfilter(data);
+          var all = ndx.groupAll();
+          var langDim = ndx.dimension(function (d) {
+            return (d.lang_1 == undefined || d.lang_1 == "") ? undefined : d.lang_1.trim();
+          })
+          var langGroup = langDim.group().reduceSum(function (d) { return 1; });
+          var langChart = dc.pieChart('#chart-ring-lang');
+          langChart
+            .width(400)
+            .height(400)
+            .radius(180)
+            .innerRadius(50)
+            .dimension(langDim)
+            .group(langGroup);
+          var cityDim = ndx.dimension(function (d) {
+            return (d.city_1 == undefined || d.city_1 == "") ? undefined : d.city_1.trim();
+          })
+          var cityGroup = cityDim.group().reduceSum(function (d) { return 1; });
+          var cityChart = dc.pieChart('#city-ring-lang');
+          cityChart
+              .width(400)
+              .height(400)
+              .radius(180)
+              .innerRadius(50)
+              .dimension(cityDim)
+              .group(cityGroup);
+          var roleDim = ndx.dimension(function (d) {
+            return (d.role_1 == undefined || d.role_1 == "") ? undefined : d.role_1.trim();
+          })
+          var roleGroup = roleDim.group().reduceSum(function (d) { return 1; });
+          var roleChart = dc.pieChart('#role-ring-lang');
+          roleChart
+              .width(400)
+              .height(400)
+              .radius(180)
+              .innerRadius(50)
+              .dimension(roleDim)
+              .group(roleGroup);
+          var perkDim = ndx.dimension(function (d) {
+            return (d.perk_1 == undefined || d.perk_1 == "") ? undefined : d.perk_1.trim();
+          })
+          var perkGroup = perkDim.group().reduceSum(function (d) { return 1; });
+          var perkChart = dc.pieChart('#perk-ring-lang');
+          perkChart
+              .width(400)
+              .height(400)
+              .radius(180)
+              .innerRadius(50)
+              .dimension(perkDim)
+              .group(perkGroup);
+          langChart.on('filtered', function(chart, filter){
+              console.log(new Date());
+          });
+          renderAll();
+        }
+      });
+
+      function renderAll(){
+        dc.renderAll();
+      }
+    </script>
     <script type="text/x-template" id="itemTemplate">
       <div class="row no-gutters">
         <div class="col-lg-12 order-lg-1 my-auto showcase-text">
@@ -187,6 +267,9 @@
           <h3><a :href="'https://news.ycombinator.com/item?id=' + todo.id" target="_blank">View original</h3>
         </div>
       </div>
+    </script>
+    <script type="text/x-template" id="chartTemplate">
+
     </script>
   </body>
 

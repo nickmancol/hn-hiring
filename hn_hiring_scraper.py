@@ -96,7 +96,7 @@ def serialize_filters(filename, opps=[]):
         writer.writerow(['article_id']
                         +['city_'+str(i) for i in range(1,4)]
                         +['lang_'+str(i) for i in range(1,4)]
-                        +['roles_'+str(i) for i in range(1,4)]
+                        +['role_'+str(i) for i in range(1,4)]
                         +['perk_'+str(i) for i in range(1,4)])
         for k in res.keys():
             curr = res[k]
