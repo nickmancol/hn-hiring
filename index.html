@@ -1,131 +1,282 @@
 <!DOCTYPE html>
 <html lang="en">
 
-  <head>
+<head>
 
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Landing Page - Start Bootstrap Theme</title>
+    <title>HN Hiring - By Nicolas Bohorquez</title>
 
-    <!-- Bootstrap core CSS -->
+    <!-- Bootstrap Core CSS -->
     <link href="js/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Custom fonts for this template -->
+    <!-- MetisMenu CSS -->
+    <link href="js/metisMenu/metisMenu.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="css/sb-admin-2.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
     <link href="js/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-    <link href="js/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
 
-    <!-- Custom styles for this template -->
-    <link href="css/landing-page.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="css/dc.min.css"/>
-  </head>
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
 
-  <body>
+</head>
 
-    <!-- Navigation -->
-    <nav class="navbar navbar-light bg-light static-top">
-      <div class="container">
-        <a class="navbar-brand" href="#">Start Bootstrap</a>
-        <a class="btn btn-primary" href="#">Sign In</a>
-      </div>
-    </nav>
+<body>
+  <div id="vue-app" >
+    <div id="wrapper">
 
-    <!-- Masthead -->
-    <header class="masthead text-white text-center">
-      <div class="overlay"></div>
-      <div class="container">
-        <div class="row">
-          <div class="col-xl-9 mx-auto">
-            <h1 id="helloHN" class="mb-5">Loading...</h1>
-          </div>
-          <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
-            <form id="formSearch">
-              <div class="form-row">
-                <div class="col-12 col-md-9 mb-2 mb-md-0">
-                  <input id="searchText" type="text" class="form-control form-control-lg" placeholder="Enter your interest...">
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html">HN Hiring</a>
+            </div>
+
+            <div class="navbar-default sidebar" role="navigation">
+                <div class="sidebar-nav navbar-collapse">
+                    <ul class="nav" id="side-menu">
+                        <li class="sidebar-search">
+                            <div class="input-group custom-search-form">
+                                <input id="searchText" type="text" class="form-control" placeholder="Search...">
+                                <span class="input-group-btn">
+                                <button id="btnSearch" class="btn btn-default" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </span>
+                            </div>
+                            <!-- /input-group -->
+                        </li>
+                        <li>
+                            <a href="index.html"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-sitemap fa-fw"></i> Languages<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                  <div class="col-xs-offset-1">
+                                    <city-item
+                                      v-for="item in topLanguages"
+                                      v-bind:city="item"
+                                      v-bind:key="item.id">
+                                    </city-item>
+                                  </div>
+                                </li>
+                                <li>
+                                    <a href="#">More Options <span class="fa arrow"></span></a>
+                                    <ul id="allLangs" class="nav nav-third-level">
+                                      <li>
+                                        <div class="col-xs-offset-1">
+                                          <city-item
+                                            v-for="item in languages"
+                                            v-bind:city="item"
+                                            v-bind:key="item.id">
+                                          </city-item>
+                                        </div>
+                                      </li>
+                                    </ul>
+                                    <!-- /.nav-third-level -->
+                                </li>
+                            </ul>
+                            <!-- /.nav-second-level -->
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-sitemap fa-fw"></i> Cities<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                  <div class="col-xs-offset-1">
+                                    <city-item
+                                      v-for="item in topCities"
+                                      v-bind:city="item"
+                                      v-bind:key="item.id">
+                                    </city-item>
+                                  </div>
+                                </li>
+                                <li>
+                                    <a href="#">More Options <span class="fa arrow"></span></a>
+                                    <ul id="allLangs" class="nav nav-third-level">
+                                      <li>
+                                        <div class="col-xs-offset-1">
+                                          <city-item
+                                            v-for="item in cities"
+                                            v-bind:city="item"
+                                            v-bind:key="item.id">
+                                          </city-item>
+                                        </div>
+                                      </li>
+                                    </ul>
+                                    <!-- /.nav-third-level -->
+                                </li>
+                            </ul>
+                            <!-- /.nav-second-level -->
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-sitemap fa-fw"></i> Roles<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                  <div class="col-xs-offset-1">
+                                    <role-item
+                                      v-for="item in topRoles"
+                                      v-bind:role="item"
+                                      v-bind:key="item.id">
+                                    </role-item>
+                                  </div>
+                                </li>
+                                <li>
+                                    <a href="#">More Options <span class="fa arrow"></span></a>
+                                    <ul id="allLangs" class="nav nav-third-level">
+                                      <li>
+                                        <div class="col-xs-offset-1">
+                                          <role-item
+                                            v-for="item in roles"
+                                            v-bind:role="item"
+                                            v-bind:key="item.id">
+                                          </role-item>
+                                        </div>
+                                      </li>
+                                    </ul>
+                                    <!-- /.nav-third-level -->
+                                </li>
+                            </ul>
+                            <!-- /.nav-second-level -->
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-sitemap fa-fw"></i> Perks<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                  <div class="col-xs-offset-1">
+                                    <perk-item
+                                      v-for="item in perks"
+                                      v-bind:perk="item"
+                                      v-bind:key="item.id">
+                                    </perk-item>
+                                  </div>
+                                </li>
+                            </ul>
+                            <!-- /.nav-second-level -->
+                        </li>
+
+                    </ul>
                 </div>
-                <div class="col-12 col-md-3">
-                  <button id="searchBtn" type="submit" class="btn btn-block btn-lg btn-primary">I feel lucky...</span>
+                <!-- /.sidebar-collapse -->
+            </div>
+            <!-- /.navbar-static-side -->
+        </nav>
+
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 id="helloHN" class="page-header">Dashboard</h1>
                 </div>
-              </div>
-            </form>
-          </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-comments fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="huge" id="oppsCounter">26</div>
+                                    <div>New Opportunities!</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-green">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-tasks fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="huge" id="langsCounter">12</div>
+                                    <div>Programming languages</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-yellow">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-shopping-cart fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="huge" id="citiesCounter">124</div>
+                                    <div>Cities around the world</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-red">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-support fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="huge" id="rolesCounter">13</div>
+                                    <div>Different Roles</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                  <ul id="results" class="chat">
+                    <result-item
+                      v-for="item in resultList"
+                      v-bind:result="item"
+                      v-bind:key="item.id">
+                    </result-item>
+                  </ul>
+                </div>
+            </div>
+            <!-- /.row -->
         </div>
-      </div>
-    </header>
+        <!-- /#page-wrapper -->
 
-    <section class="showcase">
-      <div id="filters" class="row">
-        <div id="chart-ring-lang"></div>
-        <div id="city-ring-lang"></div>
-        <div id="role-ring-lang"></div>
-        <div id="perk-ring-lang"></div>
-      </div>
-    </section>
-    <!-- Image Showcases -->
-    <section class="showcase">
-      <div id="app-7">
-          <todo-item
-            v-for="item in groceryList"
-            v-bind:todo="item"
-            v-bind:key="item.id">
-          </todo-item>
-      </div>
-    </section>
+    </div>
+    <!-- /#wrapper -->
+  </div>
+  <!-- /#vue-app -->
 
-    <!-- Footer -->
-    <footer class="footer bg-light">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-6 h-100 text-center text-lg-left my-auto">
-            <ul class="list-inline mb-2">
-              <li class="list-inline-item">
-                <a href="#">About</a>
-              </li>
-              <li class="list-inline-item">&sdot;</li>
-              <li class="list-inline-item">
-                <a href="#">Contact</a>
-              </li>
-              <li class="list-inline-item">&sdot;</li>
-              <li class="list-inline-item">
-                <a href="#">Terms of Use</a>
-              </li>
-              <li class="list-inline-item">&sdot;</li>
-              <li class="list-inline-item">
-                <a href="#">Privacy Policy</a>
-              </li>
-            </ul>
-            <p class="text-muted small mb-4 mb-lg-0">&copy; Your Website 2018. All Rights Reserved.</p>
-          </div>
-          <div class="col-lg-6 h-100 text-center text-lg-right my-auto">
-            <ul class="list-inline mb-0">
-              <li class="list-inline-item mr-3">
-                <a href="#">
-                  <i class="fa fa-facebook fa-2x fa-fw"></i>
-                </a>
-              </li>
-              <li class="list-inline-item mr-3">
-                <a href="#">
-                  <i class="fa fa-twitter fa-2x fa-fw"></i>
-                </a>
-              </li>
-              <li class="list-inline-item">
-                <a href="#">
-                  <i class="fa fa-instagram fa-2x fa-fw"></i>
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </footer>
+    <!-- jQuery -->
+    <script src="js/jquery/jquery.min.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap/js/bootstrap.min.js"></script>
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="js/metisMenu/metisMenu.min.js"></script>
+    <script src="js/sb-admin-2.js"></script>
 
-    <!-- Bootstrap core JavaScript -->
-    <script type="text/javascript" src="js/jquery/jquery.min.js"></script>
-    <script type="text/javascript" src="js/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript" src="js/elasticlunr.min.js"></script>
     <script type="text/javascript" src="js/papaparse.min.js"></script>
     <script type="text/javascript" src="js/d3.js" charset="utf-8"></script>
@@ -133,37 +284,71 @@
     <script type="text/javascript" src="js/dc.js"></script>
     <script type="text/javascript" src="js/vue.min.js"></script>
     <script type="text/javascript">
-      Vue.component('todo-item', {
-        props: ['todo'],
-        template: '#itemTemplate'
-      })
+      Vue.component('result-item', {props: ['result'], template: '#itemTemplate'});
+      Vue.component('lang-item', {props: ['lang'], template: '#langTemplate'});
+      Vue.component('city-item', {props: ['city'], template: '#cityTemplate'});
+      Vue.component('role-item', {props: ['role'], template: '#roleTemplate'});
+      Vue.component('perk-item', {props: ['perk'], template: '#perkTemplate'});
 
-      var app7 = new Vue({
-        el: '#app-7',
-        data: {groceryList: []}
-      })
+      var app = new Vue({
+        el: '#vue-app',
+        data: {resultList: []
+          , languages:[], topLanguages:[]
+          , cities:[], topCities:[]
+          , roles:[], topRoles:[]
+          , perks:[]}
+      });
     </script>
+
     <script type="text/javascript">
       $(function(){
+          var data = [];
+          var ndx, all, langDim, langGroup, cityDim, cityGroup;
+          var roleDim, roleGroup, perkDim, perkGroup;
           var index = elasticlunr(function () {
               this.addField('header');
               this.addField('text');
               this.setRef('id');
           });
           index.saveDocument(true);
-          Papa.parse("./dataCHANGEME.csv", {
+          Papa.parse("./filters.csv", {
             download: true,
             header:true,
             worker:false,
             step: function(row) {
               index.addDoc({'id':row.data[0].article_id,'header':row.data[0].header,'text':row.data[0].text});
+              data.push({'id':row.data[0].article_id,'lang_1':row.data[0].lang_1,'city_1':row.data[0].city_1
+                , 'role_1':row.data[0].role_1, 'perk_1':row.data[0].perk_1,});
             },
             complete: function() {
-              $("#helloHN").text("Index Loaded, now you can search for a job...");
+              $("#helloHN").text(index.documentStore.length+" Loaded, now you can search for a job...");
+              ndx = crossfilter(data);
+              all = ndx.groupAll();
+              langDim = ndx.dimension(function (d) {
+                return (d.lang_1 == undefined || d.lang_1 == "") ? undefined : d.lang_1.trim();
+              });
+              cityDim = ndx.dimension(function (d) {
+                return (d.city_1 == undefined || d.city_1 == "") ? undefined : d.city_1.trim();
+              });
+              roleDim = ndx.dimension(function (d) {
+                return (d.role_1 == undefined || d.role_1 == "") ? undefined : d.role_1.trim();
+              });
+              perkDim = ndx.dimension(function (d) {
+                return (d.perk_1 == undefined || d.perk_1 == "") ? undefined : d.perk_1.trim();
+              });
+              langGroup = langDim.group().reduceSum(function (d) { return 1; });
+              cityGroup = cityDim.group().reduceSum(function (d) { return 1; });
+              roleGroup = roleDim.group().reduceSum(function (d) { return 1; });
+              perkGroup = perkDim.group().reduceSum(function (d) { return 1; });
+              fillFilters(5, langGroup, app.topLanguages, app.languages);
+              fillFilters(5, cityGroup, app.topCities, app.cities);
+              fillFilters(5, roleGroup, app.topRoles, app.roles);
+              fillFilters(5, perkGroup, app.perks, app.perks);
+              updateCounters();
             }
           });
 
-          $("#formSearch").on("submit",function(event){
+          $("#btnSearch").on("click",function(event){
             var res = index.search($("#searchText").val(), {
                 fields: {
                     text: {
@@ -176,101 +361,74 @@
                 bool: "OR",
                 expand: true
             });
-            $("#divResults").html("");
-            app7.groceryList = [];
-            for(i=0; i<res.length;i++){
-              var doc = res[i].doc;
-              app7.groceryList.push({id:doc.id, header:doc.header, text:doc.text});
-            }
-            $("#helloHN").text("Found: "+res.length);
+            renderResults(res);
+
             event.preventDefault();
           });
-      });
-    </script>
 
-    <script type="text/javascript">
-      var data = [];
-      Papa.parse("./filters.csv", {
-        download: true,
-        header:true,
-        worker:false,
-        step: function(row) {
-          data.push(row.data[0]);
-        },
-        complete: function() {
-          var ndx = crossfilter(data);
-          var all = ndx.groupAll();
-          var langDim = ndx.dimension(function (d) {
-            return (d.lang_1 == undefined || d.lang_1 == "") ? undefined : d.lang_1.trim();
-          })
-          var langGroup = langDim.group().reduceSum(function (d) { return 1; });
-          var langChart = dc.pieChart('#chart-ring-lang');
-          langChart
-            .width(400)
-            .height(400)
-            .radius(180)
-            .innerRadius(50)
-            .dimension(langDim)
-            .group(langGroup);
-          var cityDim = ndx.dimension(function (d) {
-            return (d.city_1 == undefined || d.city_1 == "") ? undefined : d.city_1.trim();
-          })
-          var cityGroup = cityDim.group().reduceSum(function (d) { return 1; });
-          var cityChart = dc.pieChart('#city-ring-lang');
-          cityChart
-              .width(400)
-              .height(400)
-              .radius(180)
-              .innerRadius(50)
-              .dimension(cityDim)
-              .group(cityGroup);
-          var roleDim = ndx.dimension(function (d) {
-            return (d.role_1 == undefined || d.role_1 == "") ? undefined : d.role_1.trim();
-          })
-          var roleGroup = roleDim.group().reduceSum(function (d) { return 1; });
-          var roleChart = dc.pieChart('#role-ring-lang');
-          roleChart
-              .width(400)
-              .height(400)
-              .radius(180)
-              .innerRadius(50)
-              .dimension(roleDim)
-              .group(roleGroup);
-          var perkDim = ndx.dimension(function (d) {
-            return (d.perk_1 == undefined || d.perk_1 == "") ? undefined : d.perk_1.trim();
-          })
-          var perkGroup = perkDim.group().reduceSum(function (d) { return 1; });
-          var perkChart = dc.pieChart('#perk-ring-lang');
-          perkChart
-              .width(400)
-              .height(400)
-              .radius(180)
-              .innerRadius(50)
-              .dimension(perkDim)
-              .group(perkGroup);
-          langChart.on('filtered', function(chart, filter){
-              console.log(new Date());
+          $(".lang").on("click", function(event){
+            langDim.filterExact($(this).text());
+            updateCounters();
           });
-          renderAll();
-        }
+
+          function updateCounters(){
+            $("#helloHN").text("Found: "+index.documentStore.length);
+            $("#oppsCounter").text(index.documentStore.length);
+            $("#langsCounter").text(langGroup.size());
+            $("#citiesCounter").text(cityGroup.size());
+          }
+
+          function renderResults(res){
+            $(".results").html("");
+            app.resultList = [];
+            for(i=0; i<res.length;i++){
+              var doc = res[i].doc;
+              app.resultList.push({id:doc.id, header:doc.header, text:doc.text});
+            }
+          }
+
+          function fillFilters(max, group, destination, total){
+            var top = group.top(Math.min(max, group.size()));
+            var all = group.top(group.size());
+
+            $.each(top, function(idx, item){
+              destination.push({id:item.key, count:item.value});
+            });
+
+            if(max < group.size()){
+              for (var i = max; i < all.length; i++) {
+                total.push({id:all[i].key, count:all[i].value});
+              }
+            }
+          }
       });
-
-      function renderAll(){
-        dc.renderAll();
-      }
     </script>
+
     <script type="text/x-template" id="itemTemplate">
-      <div class="row no-gutters">
-        <div class="col-lg-12 order-lg-1 my-auto showcase-text">
-          <h2>{{todo.header}}...</h2>
-          <p class="lead mb-0">{{todo.text}}</p>
-          <h3><a :href="'https://news.ycombinator.com/item?id=' + todo.id" target="_blank">View original</h3>
-        </div>
-      </div>
+      <li class="clearfix">
+          <div class="chat-body clearfix">
+              <div class="header">
+                  <a :href="'https://news.ycombinator.com/item?id=' + result.id" target="_blank"><strong class="primary-font">{{result.header}}</strong></a>
+              </div>
+              <p>{{result.text}}</p>
+          </div>
+      </li>
     </script>
-    <script type="text/x-template" id="chartTemplate">
 
+    <script type="text/x-template" id="langTemplate">
+      <span class="btn btn-sm btn-default lang" :lang="lang.id" href="#">{{lang.id}} <span class="badge">{{lang.count}}</span></span>
     </script>
-  </body>
+
+    <script type="text/x-template" id="cityTemplate">
+      <span class="btn btn-sm btn-default city" :lang="city.id" href="#">{{city.id}} <span class="badge">{{city.count}}</span></span>
+    </script>
+
+    <script type="text/x-template" id="roleTemplate">
+      <span class="btn btn-sm btn-default role" :lang="role.id" href="#">{{role.id}} <span class="badge">{{role.count}}</span></span>
+    </script>
+    <script type="text/x-template" id="perkTemplate">
+      <span class="btn btn-sm btn-default perk" :lang="perk.id" href="#">{{perk.id}} <span class="badge">{{perk.count}}</span></span>
+    </script>
+</body>
 
 </html>

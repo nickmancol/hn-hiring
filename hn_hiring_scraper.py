@@ -12,11 +12,10 @@ suspects = []
 
 class HNOpp(object):
     #just to use a set as a way to avoid duplicates, __eq__ and __hash__ are nonsense
-    def __init__(self, id, header, text, tags=[]):
+    def __init__(self, id, header, text):
         self.id = id
         self.header = header
         self.text = text
-        self.tags = tags
 
     def __eq__(self, other):
         return self.text.lower() == other.text.lower()
@@ -69,14 +68,6 @@ def extract_opps(src_pages=[], local=False):
 
     return opps
 
-
-def serialize(filename, opps=[]):
-    with open(filename, 'w') as f:
-        writer = csv.writer(f)
-        writer.writerow(['article_id', 'header', 'text'])
-        writer.writerows([o.as_tuple() for o in opps])
-
-
 def serialize_filters(filename, opps=[]):
     schema = Schema(id=ID(stored=True), header=TEXT, text=TEXT)
     ix = create_in("./", schema)
@@ -84,7 +75,7 @@ def serialize_filters(filename, opps=[]):
     res = {}
     for o in opps:
         writer.add_document(id=o.id, header=o.header, text=o.text)
-        res[o.id] = {'languages': [], 'cities': [], 'roles': [], 'perks': []}
+        res[o.id] = {'opp':o,'languages': [], 'cities': [], 'roles': [], 'perks': []}
 
     writer.commit()
     set_tags(ix, res, 'cities', 'header', './cities.csv')
@@ -93,14 +84,15 @@ def serialize_filters(filename, opps=[]):
     set_tags(ix, res, 'roles', 'text', './roles.csv')
     with open(filename, 'w') as f:
         writer = csv.writer(f)
-        writer.writerow(['article_id']
+        writer.writerow(['article_id','header','text']
                         +['city_'+str(i) for i in range(1,4)]
                         +['lang_'+str(i) for i in range(1,4)]
                         +['role_'+str(i) for i in range(1,4)]
                         +['perk_'+str(i) for i in range(1,4)])
         for k in res.keys():
             curr = res[k]
-            row = [k]
+            row = []
+            row += curr['opp'].as_tuple()
             row += get_list_vals(curr, 'cities')
             row += get_list_vals(curr, 'languages')
             row += get_list_vals(curr, 'roles')
@@ -134,4 +126,3 @@ def set_tags(index, opps_dict, dict_key, search_field, filesrc):
 if __name__ != "main":
     opps = extract_opps(src_pages, local=False)
     serialize_filters("filters.csv", opps)
-    serialize('data.csv', opps)
