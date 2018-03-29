@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>HN Hiring - By Nicolas Bohorquez</title>
+    <title>HN Hiring</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="js/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -30,6 +30,8 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+    <link rel="stylesheet" type="text/css" href="css/dc.min.css">
+
 </head>
 
 <body>
@@ -45,7 +47,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">HN Hiring</a>
+                <a class="navbar-brand" href="index.html">HN Hiring V1.0</a>
             </div>
 
             <div class="navbar-default sidebar" role="navigation">
@@ -63,18 +65,18 @@
                             <!-- /input-group -->
                         </li>
                         <li>
-                            <a href="index.html"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                            <a href="index.html"><i class="fa fa-dashboard fa-fw"></i> Filter</a>
                         </li>
                         <li>
                             <a href="#"><i class="fa fa-sitemap fa-fw"></i> Languages<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
                                   <div class="col-xs-offset-1">
-                                    <city-item
+                                    <filter-item
                                       v-for="item in topLanguages"
-                                      v-bind:city="item"
+                                      v-bind:val="item"
                                       v-bind:key="item.id">
-                                    </city-item>
+                                    </filter-item>
                                   </div>
                                 </li>
                                 <li>
@@ -82,11 +84,11 @@
                                     <ul id="allLangs" class="nav nav-third-level">
                                       <li>
                                         <div class="col-xs-offset-1">
-                                          <city-item
+                                          <filter-item
                                             v-for="item in languages"
-                                            v-bind:city="item"
+                                            v-bind:val="item"
                                             v-bind:key="item.id">
-                                          </city-item>
+                                          </filter-item>
                                         </div>
                                       </li>
                                     </ul>
@@ -100,11 +102,11 @@
                             <ul class="nav nav-second-level">
                                 <li>
                                   <div class="col-xs-offset-1">
-                                    <city-item
+                                    <filter-item
                                       v-for="item in topCities"
-                                      v-bind:city="item"
+                                      v-bind:val="item"
                                       v-bind:key="item.id">
-                                    </city-item>
+                                    </filter-item>
                                   </div>
                                 </li>
                                 <li>
@@ -112,11 +114,11 @@
                                     <ul id="allLangs" class="nav nav-third-level">
                                       <li>
                                         <div class="col-xs-offset-1">
-                                          <city-item
+                                          <filter-item
                                             v-for="item in cities"
-                                            v-bind:city="item"
+                                            v-bind:val="item"
                                             v-bind:key="item.id">
-                                          </city-item>
+                                          </filter-item>
                                         </div>
                                       </li>
                                     </ul>
@@ -130,11 +132,11 @@
                             <ul class="nav nav-second-level">
                                 <li>
                                   <div class="col-xs-offset-1">
-                                    <role-item
+                                    <filter-item
                                       v-for="item in topRoles"
-                                      v-bind:role="item"
+                                      v-bind:val="item"
                                       v-bind:key="item.id">
-                                    </role-item>
+                                    </filter-item>
                                   </div>
                                 </li>
                                 <li>
@@ -142,11 +144,11 @@
                                     <ul id="allLangs" class="nav nav-third-level">
                                       <li>
                                         <div class="col-xs-offset-1">
-                                          <role-item
+                                          <filter-item
                                             v-for="item in roles"
-                                            v-bind:role="item"
+                                            v-bind:val="item"
                                             v-bind:key="item.id">
-                                          </role-item>
+                                          </filter-item>
                                         </div>
                                       </li>
                                     </ul>
@@ -160,11 +162,11 @@
                             <ul class="nav nav-second-level">
                                 <li>
                                   <div class="col-xs-offset-1">
-                                    <perk-item
+                                    <filter-item
                                       v-for="item in perks"
-                                      v-bind:perk="item"
+                                      v-bind:val="item"
                                       v-bind:key="item.id">
-                                    </perk-item>
+                                    </filter-item>
                                   </div>
                                 </li>
                             </ul>
@@ -181,7 +183,7 @@
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 id="helloHN" class="page-header">Dashboard</h1>
+                    <h1 id="helloHN" class="page-header">{{title}}</h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
@@ -191,12 +193,8 @@
                     <div class="panel panel-primary">
                         <div class="panel-heading">
                             <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fa fa-comments fa-5x"></i>
-                                </div>
                                 <div class="col-xs-9 text-right">
-                                    <div class="huge" id="oppsCounter">26</div>
-                                    <div>New Opportunities!</div>
+                                    <div class="huge">Opportunities</div>
                                 </div>
                             </div>
                         </div>
@@ -206,52 +204,43 @@
                     <div class="panel panel-green">
                         <div class="panel-heading">
                             <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fa fa-tasks fa-5x"></i>
-                                </div>
-                                <div class="col-xs-9 text-right">
-                                    <div class="huge" id="langsCounter">12</div>
-                                    <div>Programming languages</div>
+                                <div class="col-xs-9">
+                                    <div class="huge">Languages</div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <div id="chart-row-languages"></div>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="panel panel-yellow">
                         <div class="panel-heading">
                             <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fa fa-shopping-cart fa-5x"></i>
-                                </div>
-                                <div class="col-xs-9 text-right">
-                                    <div class="huge" id="citiesCounter">124</div>
-                                    <div>Cities around the world</div>
+                                <div class="col-xs-9">
+                                    <div class="huge">Cities</div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <div id="chart-row-cities"></div>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="panel panel-red">
                         <div class="panel-heading">
                             <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fa fa-support fa-5x"></i>
-                                </div>
-                                <div class="col-xs-9 text-right">
-                                    <div class="huge" id="rolesCounter">13</div>
-                                    <div>Different Roles</div>
+                                <div class="col-xs-9">
+                                    <div class="huge">Roles</div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <div id="chart-row-roles"></div>
                 </div>
             </div>
             <!-- /.row -->
             <div class="row">
                 <div class="col-lg-12">
-                  <ul id="results" class="chat">
+                  <ul class="chat">
                     <result-item
                       v-for="item in resultList"
                       v-bind:result="item"
@@ -284,67 +273,101 @@
     <script type="text/javascript" src="js/dc.js"></script>
     <script type="text/javascript" src="js/vue.min.js"></script>
     <script type="text/javascript">
+      var data = [], filter_list = [];
+      var ndx, all, langDim, langGroup, cityDim, cityGroup;
+      var roleDim, roleGroup, perkDim, perkGroup, tableDim;
+      var index;
       Vue.component('result-item', {props: ['result'], template: '#itemTemplate'});
-      Vue.component('lang-item', {props: ['lang'], template: '#langTemplate'});
-      Vue.component('city-item', {props: ['city'], template: '#cityTemplate'});
-      Vue.component('role-item', {props: ['role'], template: '#roleTemplate'});
-      Vue.component('perk-item', {props: ['perk'], template: '#perkTemplate'});
+      Vue.component('filter-item', {props: ['val'], template: '#tagTemplate', methods: {
+        filter: function (id) { filter_tag(id); }
+      }});
 
       var app = new Vue({
-        el: '#vue-app',
-        data: {resultList: []
+        el: '#vue-app'
+        , data: {title:'Dashboard', resultList: []
           , languages:[], topLanguages:[]
           , cities:[], topCities:[]
           , roles:[], topRoles:[]
-          , perks:[]}
+          , perks:[]
+        }
       });
     </script>
 
     <script type="text/javascript">
       $(function(){
-          var data = [];
-          var ndx, all, langDim, langGroup, cityDim, cityGroup;
-          var roleDim, roleGroup, perkDim, perkGroup;
-          var index = elasticlunr(function () {
-              this.addField('header');
-              this.addField('text');
-              this.setRef('id');
-          });
-          index.saveDocument(true);
           Papa.parse("./filters.csv", {
             download: true,
             header:true,
             worker:false,
             step: function(row) {
-              index.addDoc({'id':row.data[0].article_id,'header':row.data[0].header,'text':row.data[0].text});
-              data.push({'id':row.data[0].article_id,'lang_1':row.data[0].lang_1,'city_1':row.data[0].city_1
-                , 'role_1':row.data[0].role_1, 'perk_1':row.data[0].perk_1,});
+              if (row.data[0].article_id != ""){
+                data.push(row.data[0]);
+              }
             },
             complete: function() {
-              $("#helloHN").text(index.documentStore.length+" Loaded, now you can search for a job...");
+              app.title = 'Load complete, now you can filter or search'
               ndx = crossfilter(data);
               all = ndx.groupAll();
               langDim = ndx.dimension(function (d) {
-                return (d.lang_1 == undefined || d.lang_1 == "") ? undefined : d.lang_1.trim();
+                return (d.lang_1 == undefined || d.lang_1 == "") ? 'N/A' : d.lang_1.trim();
               });
               cityDim = ndx.dimension(function (d) {
-                return (d.city_1 == undefined || d.city_1 == "") ? undefined : d.city_1.trim();
+                return (d.city_1 == undefined || d.city_1 == "") ? 'N/A' : d.city_1.trim();
               });
               roleDim = ndx.dimension(function (d) {
-                return (d.role_1 == undefined || d.role_1 == "") ? undefined : d.role_1.trim();
+                return (d.role_1 == undefined || d.role_1 == "") ? 'N/A' : d.role_1.trim();
               });
               perkDim = ndx.dimension(function (d) {
-                return (d.perk_1 == undefined || d.perk_1 == "") ? undefined : d.perk_1.trim();
+                return (d.perk_1 == undefined || d.perk_1 == "") ? 'N/A' : d.perk_1.trim();
+              });
+              tableDim = ndx.dimension(function (d) {return d.id;});
+              tagsDim = ndx.dimension(function (d) {
+                tags = [];
+                $.each([d.lang_1, d.lang_2, d.lang_3
+                  ,d.perk_1, d.perk_2, d.perk_3
+                  , d.city_1, d.city_2, d.city_3
+                  , d.role_1, d.role_2, d.role_3], function(idx, item){
+                  if (item != "") {
+                    tags.push(item.trim());
+                  }
+                });
+                return tags;
               });
               langGroup = langDim.group().reduceSum(function (d) { return 1; });
               cityGroup = cityDim.group().reduceSum(function (d) { return 1; });
               roleGroup = roleDim.group().reduceSum(function (d) { return 1; });
               perkGroup = perkDim.group().reduceSum(function (d) { return 1; });
+              var topLanguagesChart = dc.pieChart("#chart-row-languages");
+              var topCitiesChart = dc.rowChart("#chart-row-cities");
+              var topRolesChart = dc.rowChart("#chart-row-roles");
+              topLanguagesChart.width(400).height(300)
+                  .dimension(langDim)
+                  .group(langGroup)
+                  .innerRadius(20)
+                  .slicesCap(5);
+              topCitiesChart.width(400).height(300)
+                  .dimension(cityDim)
+                  .group(cityGroup)
+                  .rowsCap(5)
+                  .elasticX(true);
+              topCitiesChart.xAxis().ticks(3).tickSize(1);
+              topRolesChart.width(400).height(300)
+                  .dimension(roleDim)
+                  .group(roleGroup)
+                  .rowsCap(5)
+                  .elasticX(true);
+              topRolesChart.xAxis().ticks(3).tickSize(1);
               fillFilters(5, langGroup, app.topLanguages, app.languages);
               fillFilters(5, cityGroup, app.topCities, app.cities);
               fillFilters(5, roleGroup, app.topRoles, app.roles);
               fillFilters(5, perkGroup, app.perks, app.perks);
-              updateCounters();
+              app.resultList = data;
+              initIndex(data);
+              for (var i = 0; i < dc.chartRegistry.list().length; i++) {
+                var chartI = dc.chartRegistry.list()[i];
+                chartI.on("filtered", refreshTable);
+              }
+              dc.renderAll();
             }
           });
 
@@ -366,27 +389,6 @@
             event.preventDefault();
           });
 
-          $(".lang").on("click", function(event){
-            langDim.filterExact($(this).text());
-            updateCounters();
-          });
-
-          function updateCounters(){
-            $("#helloHN").text("Found: "+index.documentStore.length);
-            $("#oppsCounter").text(index.documentStore.length);
-            $("#langsCounter").text(langGroup.size());
-            $("#citiesCounter").text(cityGroup.size());
-          }
-
-          function renderResults(res){
-            $(".results").html("");
-            app.resultList = [];
-            for(i=0; i<res.length;i++){
-              var doc = res[i].doc;
-              app.resultList.push({id:doc.id, header:doc.header, text:doc.text});
-            }
-          }
-
           function fillFilters(max, group, destination, total){
             var top = group.top(Math.min(max, group.size()));
             var all = group.top(group.size());
@@ -402,6 +404,48 @@
             }
           }
       });
+
+      function toggleArrayItem(a, v) {
+         var i = a.indexOf(v);
+         if (i === -1) a.push(v);
+         else a.splice(i, 1);
+      };
+
+      function createFilter(filters) {
+          return function (d) {
+              for (var i = 0, len = filters.length; i < len; i++) {
+                  if ($.inArray(filters[i], d) == -1) return false;
+              }
+              return true;
+          }
+      };
+
+      function filter_tag(id){
+        toggleArrayItem(filter_list, id);
+
+        tagsDim.filterAll();
+        tagsDim.filterFunction(createFilter(filter_list));
+        dc.redrawAll();
+      };
+
+      function refreshTable() {
+          dc.events.trigger(function () {
+            app.resultList = tableDim.top(Infinity);
+            initIndex(data);
+          });
+      };
+
+      function initIndex(data){
+        index = elasticlunr(function () {
+            this.addField('header');
+            this.addField('text');
+            this.setRef('id');
+        });
+        index.saveDocument(true);
+        for (var i = 0; i < data.length; i++) {
+          index.addDoc(data[i]);
+        }
+      };
     </script>
 
     <script type="text/x-template" id="itemTemplate">
@@ -415,19 +459,8 @@
       </li>
     </script>
 
-    <script type="text/x-template" id="langTemplate">
-      <span class="btn btn-sm btn-default lang" :lang="lang.id" href="#">{{lang.id}} <span class="badge">{{lang.count}}</span></span>
-    </script>
-
-    <script type="text/x-template" id="cityTemplate">
-      <span class="btn btn-sm btn-default city" :lang="city.id" href="#">{{city.id}} <span class="badge">{{city.count}}</span></span>
-    </script>
-
-    <script type="text/x-template" id="roleTemplate">
-      <span class="btn btn-sm btn-default role" :lang="role.id" href="#">{{role.id}} <span class="badge">{{role.count}}</span></span>
-    </script>
-    <script type="text/x-template" id="perkTemplate">
-      <span class="btn btn-sm btn-default perk" :lang="perk.id" href="#">{{perk.id}} <span class="badge">{{perk.count}}</span></span>
+    <script type="text/x-template" id="tagTemplate">
+      <span class="btn btn-sm btn-default" v-on:click="filter(val.id)">{{val.id}}</span></span>
     </script>
 </body>
 
