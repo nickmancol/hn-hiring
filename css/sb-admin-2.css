@@ -93,6 +93,9 @@ body {
 .sidebar .nav-third-level li {
   border-bottom: none !important;
 }
+.paddingleft15{ 
+  padding-left:15px;
+}
 .sidebar .nav-second-level li a {
   padding-left: 37px;
 }
@@ -236,6 +239,11 @@ table.dataTable thead .sorting:after {
 }
 .huge {
   font-size: 40px;
+}
+.oppsCounter {
+  font-size: 96px;
+  text-align: center;
+  vertical-align: middle;
 }
 .panel-green {
   border-color: #5cb85c;

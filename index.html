@@ -55,20 +55,18 @@
                     <ul class="nav" id="side-menu">
                         <li class="sidebar-search">
                             <div class="input-group custom-search-form">
-                                <input id="searchText" type="text" class="form-control" placeholder="Search...">
-                                <span class="input-group-btn">
-                                <button id="btnSearch" class="btn btn-default" type="button">
-                                    <i class="fa fa-search"></i>
-                                </button>
+                              <form id="frmSearch" method="POST">
+                                <input id="searchText" type="text" class="form-control" placeholder="Search..." v-model="searchText">
+                              </form>
                             </span>
                             </div>
                             <!-- /input-group -->
                         </li>
                         <li>
-                            <a href="index.html"><i class="fa fa-dashboard fa-fw"></i> Filter</a>
+                            <h4 class="paddingleft15"> Filters</h4>
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-sitemap fa-fw"></i> Languages<span class="fa arrow"></span></a>
+                            <a href="#"> Languages<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
                                   <div class="col-xs-offset-1">
@@ -98,7 +96,7 @@
                             <!-- /.nav-second-level -->
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-sitemap fa-fw"></i> Cities<span class="fa arrow"></span></a>
+                            <a href="#"> Cities<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
                                   <div class="col-xs-offset-1">
@@ -128,7 +126,7 @@
                             <!-- /.nav-second-level -->
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-sitemap fa-fw"></i> Roles<span class="fa arrow"></span></a>
+                            <a href="#"> Roles<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
                                   <div class="col-xs-offset-1">
@@ -158,7 +156,7 @@
                             <!-- /.nav-second-level -->
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-sitemap fa-fw"></i> Perks<span class="fa arrow"></span></a>
+                            <a href="#"> Perks<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
                                   <div class="col-xs-offset-1">
@@ -183,7 +181,11 @@
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 id="helloHN" class="page-header">{{title}}</h1>
+                    <h1 class="page-header">{{title}}
+                      <template v-if="actions.length > 0">
+                        - <a href="#" v-on:click="clearSearchFilters()">Reset All</a>
+                      </template>
+                    </h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
@@ -199,7 +201,7 @@
                             </div>
                         </div>
                     </div>
-                    <h1>{{resultList.length}}</h1>
+                    <div class="oppsCounter">{{resultList.length}}</div>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="panel panel-green">
@@ -280,16 +282,18 @@
       var index;
       Vue.component('result-item', {props: ['result'], template: '#itemTemplate'});
       Vue.component('filter-item', {props: ['val'], template: '#tagTemplate', methods: {
-        filter: function (id) { filter_tag(id); }
+        filter: function (id) {
+          filterTag(id);
+        }
       }});
 
       var app = new Vue({
         el: '#vue-app'
-        , data: {title:'Dashboard', resultList: []
+        , data: {title:'Loading...', resultList: []
           , languages:[], topLanguages:[]
           , cities:[], topCities:[]
           , roles:[], topRoles:[]
-          , perks:[]
+          , perks:[], actions:[], searchText:''
         }
       });
     </script>
@@ -306,74 +310,19 @@
               }
             },
             complete: function() {
-              app.title = 'Load complete, now you can filter or search'
-              ndx = crossfilter(data);
-              all = ndx.groupAll();
-              langDim = ndx.dimension(function (d) {
-                return (d.lang_1 == undefined || d.lang_1 == "") ? 'N/A' : d.lang_1.trim();
-              });
-              cityDim = ndx.dimension(function (d) {
-                return (d.city_1 == undefined || d.city_1 == "") ? 'N/A' : d.city_1.trim();
-              });
-              roleDim = ndx.dimension(function (d) {
-                return (d.role_1 == undefined || d.role_1 == "") ? 'N/A' : d.role_1.trim();
-              });
-              perkDim = ndx.dimension(function (d) {
-                return (d.perk_1 == undefined || d.perk_1 == "") ? 'N/A' : d.perk_1.trim();
-              });
-              tableDim = ndx.dimension(function (d) {return d.id;});
-              tagsDim = ndx.dimension(function (d) {
-                tags = [];
-                $.each([d.lang_1, d.lang_2, d.lang_3
-                  ,d.perk_1, d.perk_2, d.perk_3
-                  , d.city_1, d.city_2, d.city_3
-                  , d.role_1, d.role_2, d.role_3], function(idx, item){
-                  if (item != "") {
-                    tags.push(item.trim());
-                  }
-                });
-                return tags;
-              });
-              langGroup = langDim.group().reduceSum(function (d) { return 1; });
-              cityGroup = cityDim.group().reduceSum(function (d) { return 1; });
-              roleGroup = roleDim.group().reduceSum(function (d) { return 1; });
-              perkGroup = perkDim.group().reduceSum(function (d) { return 1; });
-              var topLanguagesChart = dc.pieChart("#chart-row-languages");
-              var topCitiesChart = dc.rowChart("#chart-row-cities");
-              var topRolesChart = dc.rowChart("#chart-row-roles");
-              topLanguagesChart.width(400).height(300)
-                  .dimension(langDim)
-                  .group(langGroup)
-                  .innerRadius(20)
-                  .slicesCap(5);
-              topCitiesChart.width(400).height(300)
-                  .dimension(cityDim)
-                  .group(cityGroup)
-                  .rowsCap(5)
-                  .elasticX(true);
-              topCitiesChart.xAxis().ticks(3).tickSize(1);
-              topRolesChart.width(400).height(300)
-                  .dimension(roleDim)
-                  .group(roleGroup)
-                  .rowsCap(5)
-                  .elasticX(true);
-              topRolesChart.xAxis().ticks(3).tickSize(1);
+              clearSearchFilters();
               fillFilters(5, langGroup, app.topLanguages, app.languages);
               fillFilters(5, cityGroup, app.topCities, app.cities);
               fillFilters(5, roleGroup, app.topRoles, app.roles);
               fillFilters(5, perkGroup, app.perks, app.perks);
-              app.resultList = data;
-              initIndex(data);
-              for (var i = 0; i < dc.chartRegistry.list().length; i++) {
-                var chartI = dc.chartRegistry.list()[i];
-                chartI.on("filtered", refreshTable);
-              }
-              dc.renderAll();
             }
           });
 
-          $("#btnSearch").on("click",function(event){
-            var res = index.search($("#searchText").val(), {
+          $("#frmSearch").on("submit",function(event){
+            if(app.searchText === ""){
+              return;
+            }
+            var res = index.search(app.searchText, {
                 fields: {
                     text: {
                         boost: 2,
@@ -385,25 +334,11 @@
                 bool: "OR",
                 expand: true
             });
+            app.actions.push('search: '+app.searchText);
             filterTable(res);
 
             event.preventDefault();
           });
-
-          function fillFilters(max, group, destination, total){
-            var top = group.top(Math.min(max, group.size()));
-            var all = group.top(group.size());
-
-            $.each(top, function(idx, item){
-              destination.push({id:item.key, count:item.value});
-            });
-
-            if(max < group.size()){
-              for (var i = max; i < all.length; i++) {
-                total.push({id:all[i].key, count:all[i].value});
-              }
-            }
-          }
       });
 
       function toggleArrayItem(a, v) {
@@ -421,11 +356,15 @@
           }
       };
 
-      function filter_tag(id){
+      function filterTag(id, classAttr){
         toggleArrayItem(filter_list, id);
-
+        toggleArrayItem(app.actions, 'filter: '+id);
+        updateTitle();
         tagsDim.filterAll();
         tagsDim.filterFunction(createFilter(filter_list));
+        //hack, why v-bind:class doesn't work?
+        $('.btn'+id).toggleClass('btn-primary');
+        refreshTable();
         dc.redrawAll();
       };
 
@@ -433,6 +372,7 @@
         dc.events.trigger(function () {
           app.resultList = tableDim.top(Infinity);
           initIndex(app.resultList);
+          updateTitle();
         });
       };
 
@@ -441,6 +381,8 @@
         for (var i = 0; i < res.length; i++) {
           app.resultList.push(res[i].doc);
         }
+        initDc(app.resultList);
+        updateTitle();
       };
 
       function initIndex(data){
@@ -452,16 +394,115 @@
         index.saveDocument(true);
         for (var i = 0; i < data.length; i++) {
           var row = data[i];
-          index.addDoc({'article_id': row.article_id, 'header': row.header, 'text': row.text});
+          index.addDoc(row);
         }
       };
+
+      function fillFilters(max, group, destination, total){
+        var top = group.top(Math.min(max, group.size()));
+        var all = group.top(group.size());
+        var dest = []
+
+        $.each(top, function(idx, item){
+          destination.push({id:item.key, count:item.value});
+        });
+
+        if(max < group.size()){
+          for (var i = max; i < all.length; i++) {
+            total.push({id:all[i].key, count:all[i].value});
+          }
+        }
+      }
+
+      function clearSearchFilters(){
+        app.resultList = data;
+        app.actions = [];
+        app.searchText = '';
+        //hack, check a vue oop way to do it
+        $(".btnFilter").removeClass('btn-primary');
+        initDc(data);
+        initIndex(data);
+        updateTitle();
+      }
+
+      function initDc(data){
+        ndx = crossfilter(data);
+        all = ndx.groupAll();
+        langDim = ndx.dimension(function (d) {
+          return (d.lang_1 == undefined || d.lang_1 == "") ? 'N/A' : d.lang_1.trim();
+        });
+        cityDim = ndx.dimension(function (d) {
+          return (d.city_1 == undefined || d.city_1 == "") ? 'N/A' : d.city_1.trim();
+        });
+        roleDim = ndx.dimension(function (d) {
+          return (d.role_1 == undefined || d.role_1 == "") ? 'N/A' : d.role_1.trim();
+        });
+        perkDim = ndx.dimension(function (d) {
+          return (d.perk_1 == undefined || d.perk_1 == "") ? 'N/A' : d.perk_1.trim();
+        });
+        tableDim = ndx.dimension(function (d) {return d.id;});
+        tagsDim = ndx.dimension(function (d) {
+          tags = [];
+          $.each([d.lang_1, d.lang_2, d.lang_3
+            ,d.perk_1, d.perk_2, d.perk_3
+            , d.city_1, d.city_2, d.city_3
+            , d.role_1, d.role_2, d.role_3], function(idx, item){
+            if (item != "") {
+              tags.push(item.trim());
+            }
+          });
+          return tags;
+        });
+        langGroup = langDim.group().reduceSum(function (d) { return 1; });
+        cityGroup = cityDim.group().reduceSum(function (d) { return 1; });
+        roleGroup = roleDim.group().reduceSum(function (d) { return 1; });
+        perkGroup = perkDim.group().reduceSum(function (d) { return 1; });
+        var topLanguagesChart = dc.pieChart("#chart-row-languages");
+        var topCitiesChart = dc.rowChart("#chart-row-cities");
+        var topRolesChart = dc.rowChart("#chart-row-roles");
+        topLanguagesChart.width(400).height(300)
+            .dimension(langDim)
+            .group(langGroup)
+            .innerRadius(20)
+            .slicesCap(5);
+        topCitiesChart.width(400).height(300)
+            .dimension(cityDim)
+            .group(cityGroup)
+            .rowsCap(5)
+            .elasticX(true);
+        topCitiesChart.xAxis().ticks(3).tickSize(1);
+        topRolesChart.width(400).height(300)
+            .dimension(roleDim)
+            .group(roleGroup)
+            .rowsCap(5)
+            .elasticX(true);
+        topRolesChart.xAxis().ticks(3).tickSize(1);
+        for (var i = 0; i < dc.chartRegistry.list().length; i++) {
+          var chartI = dc.chartRegistry.list()[i];
+          chartI.on("filtered", function(chart, filter){
+            toggleArrayItem(app.actions, 'include: '+filter);
+            updateTitle();
+            refreshTable();
+          });
+        }
+        dc.renderAll();
+      }
+
+      function updateTitle(){
+        var msg = 'Load complete, now you can filter or search';
+        if(app.actions.length > 0){
+            msg = app.actions.join(' > ')
+        }
+        app.title = msg;
+      }
     </script>
 
     <script type="text/x-template" id="itemTemplate">
       <li class="clearfix">
           <div class="chat-body clearfix">
               <div class="header">
-                  <a :href="'https://news.ycombinator.com/item?id=' + result.id" target="_blank"><strong class="primary-font">{{result.header}}</strong></a>
+                  <a :href="'https://news.ycombinator.com/item?id=' + result.id" target="_blank">
+                    <strong class="primary-font">{{result.header}}</strong></a>
               </div>
               <p>{{result.text}}</p>
           </div>
@@ -469,7 +510,8 @@
     </script>
 
     <script type="text/x-template" id="tagTemplate">
-      <span class="btn btn-sm btn-default" v-on:click="filter(val.id)">{{val.id}}</span></span>
+      <span :class="'btn btn-sm btn-default btnFilter btn' + val.id"
+        v-on:click="filter(val.id);">{{val.id}} {{this.btnType}}</span>
     </script>
 </body>
 
