@@ -69,7 +69,6 @@ def extract_opps(src_pages=[], local=False):
     return opps
 
 def serialize_filters(filename, opps=[]):
-    print(len(opps))
     schema = Schema(id=ID(stored=True), header=TEXT, text=TEXT)
     ix = create_in("./", schema)
     writer = ix.writer()
