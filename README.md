@@ -35,6 +35,6 @@ Currently the tagging process is veeeery simple, given that _R_ is a single lett
 - Document the code and improve README.md fle
 - Optimize js imports (_why dc.min.js breaks the rowChart order?_)
 - Improve post rendering
-- Add topic analysis as a filter
+- Add topic analysis to the scraper and to the filters
 - Add _undo search_
 - Improve performance
