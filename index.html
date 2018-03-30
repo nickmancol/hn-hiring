@@ -443,8 +443,9 @@
         });
         index.saveDocument(true);
         for (var i = 0; i < data.length; i++) {
-          index.addDoc(data[i]);
+          index.addDoc({id: data[i].id, header: data[i].header, text: data[i].text});
         }
+        console.log(index.documentStore);
       };
     </script>
 
