@@ -4,18 +4,16 @@ from whoosh.index import create_in
 from whoosh.fields import *
 from whoosh.query import *
 from whoosh.qparser import QueryParser
+import sys
 import csv
-
-# specify the url
-src_pages = ['16052538', '16492994', '16282819' ]
-suspects = []
 
 class HNOpp(object):
     #just to use a set as a way to avoid duplicates, __eq__ and __hash__ are nonsense
-    def __init__(self, id, header, text):
+    def __init__(self, id, header, text, source):
         self.id = id
         self.header = header
         self.text = text
+        self.source = source
 
     def __eq__(self, other):
         return self.text.lower() == other.text.lower()
@@ -24,7 +22,7 @@ class HNOpp(object):
         return hash(self.text.lower())
 
     def as_tuple(self):
-        return (self.id, self.header, self.text)
+        return (self.id, self.header, self.text, self.source)
 
 
 def extract_header(text=''):
@@ -56,6 +54,8 @@ def extract_opps(src_pages=[], local=False):
 
         # Take the row of the comments
         offers = soup.findAll('tr', attrs={'class': 'athing'})
+        page_title = soup.find('a', attrs={'class': 'storylink'}).text
+        page_title = page_title[page_title.find("(")+1:page_title.find(")")]
         for o in offers:
             comm_id = o.get('id')
             a = o.find('span', attrs={'class': 'c00'})
@@ -64,11 +64,12 @@ def extract_opps(src_pages=[], local=False):
                 #TODO: change this selection criteria
                 if '|' in header:
                     text = extract_text(a)
-                    opps.add(HNOpp(comm_id, extract_header(header), text))
+                    opps.add(HNOpp(comm_id, extract_header(header), text, page_title))
 
     return opps
 
 def serialize_filters(filename, opps=[]):
+    print(len(opps))
     schema = Schema(id=ID(stored=True), header=TEXT, text=TEXT)
     ix = create_in("./", schema)
     writer = ix.writer()
@@ -84,7 +85,7 @@ def serialize_filters(filename, opps=[]):
     set_tags(ix, res, 'roles', 'text', './roles.csv')
     with open(filename, 'w') as f:
         writer = csv.writer(f)
-        writer.writerow(['article_id','header','text']
+        writer.writerow(['article_id','header','text','source']
                         +['city_'+str(i) for i in range(1,4)]
                         +['lang_'+str(i) for i in range(1,4)]
                         +['role_'+str(i) for i in range(1,4)]
@@ -124,5 +125,9 @@ def set_tags(index, opps_dict, dict_key, search_field, filesrc):
 
 
 if __name__ != "main":
-    opps = extract_opps(src_pages, local=False)
+    if len(sys.argv) < 2:
+        print("Usage python hn_hiring_scraper.py post_id1 post_id2 post_id3 post_idn")
+        sys.exit(0)
+
+    opps = extract_opps(sys.argv[1:], local=False)
     serialize_filters("filters.csv", opps)

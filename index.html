@@ -47,7 +47,13 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">HN Hiring V1.0</a>
+                <a class="navbar-brand" href="#">HN Hiring V1.0</a>
+                <a href="http://blog.nicolasbohorquez.com/hn-hiring-filters.html" target="_blank"
+                  title="Read the blog post about this" class="navbar-brand"><i class="fa fa-question-circle"></i></a>
+                <a href="https://github.com/nickmancol/hn-hiring" target="_blank"
+                  title="Clone the source code" class="navbar-brand"><i class="fa fa-github"></i></a>
+                <a href="https://github.com/nickmancol/hn-hiring"><img style="position: absolute; top: 0; right: 0; border: 0;"
+                  src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
             </div>
 
             <div class="navbar-default sidebar" role="navigation">
@@ -196,12 +202,12 @@
                         <div class="panel-heading">
                             <div class="row">
                                 <div class="col-xs-9 text-right">
-                                    <div class="huge">Opportunities</div>
+                                    <div class="huge">Posts: {{resultList.length}}</div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="oppsCounter">{{resultList.length}}</div>
+                    <div id="chart-row-source"></div>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="panel panel-green">
@@ -271,9 +277,9 @@
 
     <script type="text/javascript" src="js/elasticlunr.min.js"></script>
     <script type="text/javascript" src="js/papaparse.min.js"></script>
-    <script type="text/javascript" src="js/d3.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/d3.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="js/crossfilter.min.js"></script>
-    <script type="text/javascript" src="js/dc.js"></script>
+    <script type="text/javascript" src="js/dc.min.js"></script>
     <script type="text/javascript" src="js/vue.min.js"></script>
     <script type="text/javascript">
       var data = [], filter_list = [];
@@ -428,6 +434,9 @@
       function initDc(data){
         ndx = crossfilter(data);
         all = ndx.groupAll();
+        sourceDim = ndx.dimension(function (d) {
+          return d.source.trim();
+        });
         langDim = ndx.dimension(function (d) {
           return (d.lang_1 == undefined || d.lang_1 == "") ? 'N/A' : d.lang_1.trim();
         });
@@ -457,9 +466,16 @@
         cityGroup = cityDim.group().reduceSum(function (d) { return 1; });
         roleGroup = roleDim.group().reduceSum(function (d) { return 1; });
         perkGroup = perkDim.group().reduceSum(function (d) { return 1; });
+        sourceGroup = sourceDim.group().reduceSum(function (d) { return 1; });
         var topLanguagesChart = dc.pieChart("#chart-row-languages");
         var topCitiesChart = dc.rowChart("#chart-row-cities");
         var topRolesChart = dc.rowChart("#chart-row-roles");
+        var sourceChart = dc.pieChart("#chart-row-source");
+        sourceChart.width(400).height(300)
+            .dimension(sourceDim)
+            .group(sourceGroup)
+            .innerRadius(20)
+            .slicesCap(5);
         topLanguagesChart.width(400).height(300)
             .dimension(langDim)
             .group(langGroup)
