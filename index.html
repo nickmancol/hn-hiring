@@ -199,6 +199,7 @@
                             </div>
                         </div>
                     </div>
+                    <h1>{{resultList.length}}</h1>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="panel panel-green">
@@ -384,7 +385,7 @@
                 bool: "OR",
                 expand: true
             });
-            renderResults(res);
+            filterTable(res);
 
             event.preventDefault();
           });
@@ -429,23 +430,30 @@
       };
 
       function refreshTable() {
-          dc.events.trigger(function () {
-            app.resultList = tableDim.top(Infinity);
-            initIndex(data);
-          });
+        dc.events.trigger(function () {
+          app.resultList = tableDim.top(Infinity);
+          initIndex(app.resultList);
+        });
+      };
+
+      function filterTable(res) {
+        app.resultList = [];
+        for (var i = 0; i < res.length; i++) {
+          app.resultList.push(res[i].doc);
+        }
       };
 
       function initIndex(data){
         index = elasticlunr(function () {
             this.addField('header');
             this.addField('text');
-            this.setRef('id');
+            this.setRef('article_id');
         });
         index.saveDocument(true);
         for (var i = 0; i < data.length; i++) {
-          index.addDoc({id: data[i].id, header: data[i].header, text: data[i].text});
+          var row = data[i];
+          index.addDoc({'article_id': row.article_id, 'header': row.header, 'text': row.text});
         }
-        console.log(index.documentStore);
       };
     </script>
 
