@@ -93,7 +93,7 @@ body {
 .sidebar .nav-third-level li {
   border-bottom: none !important;
 }
-.paddingleft15{ 
+.paddingleft15{
   padding-left:15px;
 }
 .sidebar .nav-second-level li a {
@@ -439,4 +439,7 @@ table.dataTable thead .sorting:after {
     border-right-width: 14px;
     border-left-width: 0;
   }
+}
+.no-padding-left{
+  padding-left:0;
 }
