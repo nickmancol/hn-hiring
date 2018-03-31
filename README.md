@@ -39,3 +39,5 @@ Currently the auto-tagging process is very simple and cannot tag properly all th
 - Add _undo search_
 - Improve performance
 - Improve auto-tagging
+- Improve duplicate detection
+- Improve dc dimensions to include multiple languages/cities/roles
