@@ -26,9 +26,9 @@ To tag each post some static lists are included:
 - Cities from [WorldAtlas](https://www.worldatlas.com/citypops.htm)
 - IT Roles from [The Balance](https://www.thebalance.com/list-of-information-technology-it-job-titles-2061498) with some Data Science additions
 
-### Why is not R included in the programming languages?
+### Why is not \[R, C++, C#, etc\] included in the filters?
 
-Currently the tagging process is veeeery simple, given that _R_ is a single letter it lead to tag _every_ post i preferred to avoid it. I am working on that...no promises.
+Currently the auto-tagging process is very simple and cannot tag properly all the posts, but you can use the full text search to find and filter some of them (_Try c# in the search box for example_). I am working on that...no promises.
 
 ## TODO
 
@@ -38,3 +38,4 @@ Currently the tagging process is veeeery simple, given that _R_ is a single lett
 - Add topic analysis to the scraper and to the filters
 - Add _undo search_
 - Improve performance
+- Improve auto-tagging
